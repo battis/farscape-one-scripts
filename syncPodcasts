@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# prerequisites
+# https://github.com/manolomartinez/greg
+# pip3 install --user greg
+
 gregDir=$HOME/Library/Application\ Support/greg/Podcasts
 iTunesLibrary=$HOME/Music/iTunes\ \(Music\ \&\ Audiobooks\)
 autoAddDir=$iTunesLibrary/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
