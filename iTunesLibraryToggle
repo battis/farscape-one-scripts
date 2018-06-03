@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# usage: iTunesLibraryToggle [library] [playlist]
+# e.g. iTunesLibraryToggle "$HOME/Music/iTunes (Music & Audiobooks)" Audiobooks
+
+iTunesLibraryToggle() {
+	# make sure the iTunes directory is, in fact, a symlink
+	iTunesDir=$HOME/Music/iTunes
+	if [[ -L "$iTunesDir" ]] ; then
+	
+		# check to see if symlink is already pointing at the library we're trying to open
+		if ! readlink "$iTunesDir" | grep -q "$1" ; then
+		
+			# quit iTunes before messing with settings
+			if pgrep -xq -- "iTunes" ; then
+				printf "Quitting iTunes"
+				osascript -e 'quit app "iTunes"'
+				while pgrep -xq -- "iTunes"; do
+					printf "."
+					sleep .25
+				done
+				printf "\n"
+			fi
+		
+			# reset iTuens database location...
+			printf "Nuking iTunes defaults from space\n"
+			defaults delete com.apple.iTunes 'Database Location'
+		
+			# ...and link to the new iTunes library location
+			printf "Linking $1 as the iTunes Library\n"
+			rm "$HOME/Music/iTunes"
+			ln -s "$1" "$HOME/Music/iTunes"
+		else
+			printf "\033[1;32m$1 is already linked as the iTunes Library\033[0m\n"
+		fi
+	
+		# re-open iTunes with new library location
+		printf "Opening iTunes\n"
+		open "/Applications/iTunes.app"
+	
+		# open requested playlist (if any)
+		case "$2" in
+		"Music" | "Audiobooks" | "Movies" | "TV Shows" )
+			printf "Opening $2 playlist\n"
+			osascript -e "tell application \"iTunes\" to reveal playlist \"$2\""
+			;;
+		*)
+			# do nothing
+			;;
+		esac
+	else
+		printf "\033[1;31mThe iTunes directory is not a symlink!\033[0m\n"
+	fi
+}
+
+iTunesLibraryToggle "$1" "$2"

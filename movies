@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+iTunesLibraryToggle "$HOME/Music/iTunes (Movies & TV Shows)" Movies

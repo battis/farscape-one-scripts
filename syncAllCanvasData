@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+canvasDataCli -c ~/Library/Application\ Support/canvas-data-cli/config.js sync

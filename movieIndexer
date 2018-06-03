@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# prerequsites
+# brew install mediainfo
+# brew install homebrew/dupes/grep --with-default-names
+
+cd /Volumes/Movies
+
+printf "# Movies Ripped to Farscape One\n\n"
+
+for d in ./*/
+do
+  (
+    cd "$d"
+    for f in *
+    do
+      if [[ $f != *"H.264"* ]]
+      then
+        printf "  - "
+        if [[ $d == *[_]* ]]
+        then
+          m="$(mediainfo "$f" | grep -oP "(?<=^Movie name                               : ).*")"
+          if [[ ! -z $m ]]
+          then
+            printf "%s\n" "$m"
+          else
+            mediainfo "$f" | grep -oP "(?<=^Track name                               : ).*"
+          fi
+        else
+          echo $f | grep -oP ".*(?=\.\w{3,3})"
+        fi
+      fi
+    done
+  )
+done

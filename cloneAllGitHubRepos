@@ -1,0 +1,71 @@
+#!/usr/bin/env php
+<?php
+
+$user = getenv('GH_USER');
+$access_token = getenv('GH_API_TOKEN');
+$ssh_key = getenv('GH_SSH_KEY');
+$password = getenv('GH_SSH_PASSWORD');
+$defaultRoot = "/Volumes/Cloud/GitHub"; // getcwd()
+
+exec("/usr/bin/expect -c 'spawn ssh-add \"{$ssh_key}\"; expect \"Enter passphrase for {$ssh_key}:\"; send \"{$password}\\n\"; interact'");
+
+$root = (empty($argv[1]) ? $defaultRoot : $argv[1]);
+
+if (!file_exists($root)) {
+	if (file_exists(realpath($defaultRoot . '/' . $root))) {
+		$root = realpath($defaultRoot . '/' . $root);
+	} else {
+		printf("\033[0;31mRoot directory could not be determined\033[0m\n");
+		exit;
+	}
+}
+
+echo "************************************************************************" . PHP_EOL;
+echo "Using \033[1;32m$root\033[0m as the root directory" . PHP_EOL;
+
+/* start at page 1 and work through results until we hit the last page */
+$page = 1;
+do {
+	/* configure a curl instance to get the next page of results */
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, "https://api.github.com/user/repos?page=$page");
+	curl_setopt($ch, CURLOPT_USERAGENT, 'sync-github-repos');
+	curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: token $access_token"]);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	$json = curl_exec($ch);
+	curl_close($ch);
+
+	/* walk through the list of repos and sync them locally */
+	$prev = "";
+	foreach($repos = json_decode($json, true) as $repo) {
+		/* first repo from this owner? */
+		if ($prev != $repo['owner']['login']) {
+			echo "********** {$repo['owner']['login']}" . PHP_EOL;
+		}
+		$prev = $repo['owner']['login'];
+		
+		/* have we already cloned this repo? */
+		$owner = "$root/{$repo['owner']['login']}";
+		$path = "{$owner}/{$repo['name']}";
+		if (!file_exists($path)) {
+			if (!file_exists($owner)) {
+				printf("Creating user directory: \033[0;32m$owner\033[0m\n");
+				mkdir($owner);
+			}
+
+			/* if not, let's clone it now */
+			echo "\033[1;32m";
+			unset($output);
+			exec("git clone {$repo['ssh_url']} $path", $output);
+			echo implode(PHP_EOL, $output) . PHP_EOL;
+			echo "\033[0m\n";
+		} else {
+			/* if it _is_ cloned, let's track all remote branches and pull changes */
+			unset($output);
+			echo "{$repo['owner']['login']}/{$repo['name']}\n";
+			exec("cd $path; git pull --all; cd $root", $output);
+			echo "  " . implode (PHP_EOL . "  ", $output) . PHP_EOL;
+		}
+	}
+	$page++;
+} while (count($repos) > 0);

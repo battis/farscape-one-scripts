@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+function _unpackAllCanvasData {
+  for path in ~/Documents/CanvasData/dataFiles/*
+  do
+    filter=$(basename $path)
+    if [ "$filter" != "schema.json" ]
+    then
+      canvasDataCli -c /Users/sethbattis/Library/Application\ Support/canvas-data-cli/config.js unpack -f "$filter"
+    fi
+  done
+}
+_unpackAllCanvasData
