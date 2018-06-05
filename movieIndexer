@@ -5,30 +5,43 @@
 
 cd /Volumes/Movies
 
-printf "# Movies Ripped to Farscape One\n\n"
-
-for d in ./*/
-do
-  (
-    cd "$d"
-    for f in *
-    do
-      if [[ $f != *"H.264"* ]]
-      then
-        printf "  - "
-        if [[ $d == *[_]* ]]
-        then
-          m="$(mediainfo "$f" | grep -oP "(?<=^Movie name                               : ).*")"
-          if [[ ! -z $m ]]
-          then
-            printf "%s\n" "$m"
-          else
-            mediainfo "$f" | grep -oP "(?<=^Track name                               : ).*"
-          fi
-        else
-          echo $f | grep -oP ".*(?=\.\w{3,3})"
-        fi
-      fi
-    done
-  )
+shopt -s extglob
+for d in ./!(_*)/; do
+	directory="$(basename "$d")"
+	title=""
+	if [ `ls -1 "$d" | wc -l` != "1" ] || [[ $directory == *[_]* ]]; then
+		indent="  "
+		if [ `ls -1 "$d" | wc -l` != "1" ]; then
+			printf "  - $directory\n"
+			indent="$indent  "
+		fi
+		for f in "$d"*; do
+			movie=""
+			track=""
+			if [[ $f != *"H.264"* ]]; then
+				title=""
+				filename="$(basename "$f" | grep -oP ".*(?=\.\w{3,3})")"
+				if [[ $filename == *[_]* ]] || [[ $filename == [0-9][0-9]" "* ]]; then 
+					movie="$(mediainfo "$f" | grep -oP "(?<=^Movie name                               : ).*")"
+					if [ -z "$movie" ]; then
+						track="$(mediainfo "$f" | grep -oP "(?<=^Track name                               : ).*")"
+						if [ -z "$track" ]; then
+							title="$filename"
+						else
+							title="$track"
+						fi
+					else
+						title="$movie"
+					fi
+				fi
+				if [[ -z $title ]]; then
+					title="$filename"
+				fi
+				printf "$indent- $title\n"
+			fi
+		done
+	else
+		printf "  - $directory\n"
+	fi
 done
+shopt -u extglob
