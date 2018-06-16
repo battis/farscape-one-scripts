@@ -22,8 +22,8 @@ iTunesLibraryToggle() {
 				printf "\n"
 			fi
 		
-			# reset iTuens database location...
-			printf "Nuking iTunes defaults from space\n"
+			# reset iTunes database location...
+			printf "Nuking iTunes defaults from orbit\n"
 			defaults delete com.apple.iTunes 'Database Location'
 		
 			# ...and link to the new iTunes library location
