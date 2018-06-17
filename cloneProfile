@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# default to cloned Gist, but accept an argument instead
+dest=/Volumes/Cloud/GitHub/Gists/bash_profile
+if [ ! -z ${1+x} ]; then
+	dest=$1
+fi
+
+# clone current profile information
+cat "$HOME/.bash_profile" >"$dest/.bash_profile"
+cat "$HOME/.bashrc" >"$dest/.bashrc"
+cat "$HOME/.profile" >"$dest/.profile"
+crontab -l >"$dest/crontab"
+
+echo $GH_SSH_KEY
+
+# set up a known SSH key
+/usr/bin/expect -c "spawn ssh-add \"$GH_SSH_KEY\"; expect \"Enter passphrase for $GH_SSH_KEY:\"; send \"$GH_SSH_PASSWORD\\n\"; interact"
+
+# push any changes to the Gist
+cd $dest
+git add -A
+git commit -m "Automatic Backup"
+git push

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# default to usual location, but accept an argument instead
+scripts=$HOME/Library/Scripts
+if [ ! -z ${1+x} ]; then
+	scripts=$1
+fi
+
+# set up a known SSH key
+/usr/bin/expect -c "spawn ssh-add \"$GH_SSH_KEY\"; expect \"Enter passphrase for $GH_SSH_KEY:\"; send \"$GH_SSH_PASSWORD\\n\"; interact"
+
+# push any script changes to GitHub
+cd $scripts
+git add -A
+git commit -m "Automatic Backup"
+git push
