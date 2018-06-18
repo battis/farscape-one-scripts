@@ -7,9 +7,9 @@ if [ ! -z ${1+x} ]; then
 fi
 
 # clone current profile information
-cat "$HOME/.bash_profile" >"$dest/.bash_profile"
-cat "$HOME/.bashrc" >"$dest/.bashrc"
-cat "$HOME/.profile" >"$dest/.profile"
+cat "$HOME/.bash_profile" >"$dest/bash_profile"
+cat "$HOME/.bashrc" >"$dest/bashrc"
+cat "$HOME/.profile" >"$dest/profile"
 crontab -l >"$dest/crontab"
 
 echo $GH_SSH_KEY
