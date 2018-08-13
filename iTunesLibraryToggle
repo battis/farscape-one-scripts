@@ -6,7 +6,7 @@
 iTunesLibraryToggle() {
 	# make sure the iTunes directory is, in fact, a symlink
 	iTunesDir=$HOME/Music/iTunes
-	if [[ -L "$iTunesDir" ]] ; then
+	if [[ ! -d "$iTunesDir" || -L "$iTunesDir" ]] ; then
 	
 		# check to see if symlink is already pointing at the library we're trying to open
 		if ! readlink "$iTunesDir" | grep -q "$1" ; then
