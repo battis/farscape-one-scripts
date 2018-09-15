@@ -7,7 +7,7 @@ $ssh_key = getenv('GH_SSH_KEY');
 $password = getenv('GH_SSH_PASSWORD');
 $defaultRoot = "/Volumes/Cloud/GitHub"; // getcwd()
 
-exec("/usr/bin/expect -c 'spawn ssh-add \"{$ssh_key}\"; expect \"Enter passphrase for {$ssh_key}:\"; send \"{$password}\\n\"; interact'");
+$bash = "ssh-agent bash -c 'ssh-add \"$ssh_key\"; ";
 
 $root = (empty($argv[1]) ? $defaultRoot : $argv[1]);
 
@@ -19,9 +19,6 @@ if (!file_exists($root)) {
 		exit;
 	}
 }
-
-echo "************************************************************************" . PHP_EOL;
-echo "Using \033[1;32m$root\033[0m as the root directory" . PHP_EOL;
 
 /* start at page 1 and work through results until we hit the last page */
 $page = 1;
@@ -36,36 +33,27 @@ do {
 	curl_close($ch);
 
 	/* walk through the list of repos and sync them locally */
-	$prev = "";
 	foreach($repos = json_decode($json, true) as $repo) {
-		/* first repo from this owner? */
-		if ($prev != $repo['owner']['login']) {
-			echo "********** {$repo['owner']['login']}" . PHP_EOL;
-		}
-		$prev = $repo['owner']['login'];
 		
 		/* have we already cloned this repo? */
 		$owner = "$root/{$repo['owner']['login']}";
 		$path = "{$owner}/{$repo['name']}";
 		if (!file_exists($path)) {
 			if (!file_exists($owner)) {
-				printf("Creating user directory: \033[0;32m$owner\033[0m\n");
-				mkdir($owner);
+				$bash .= "mkdir \"$owner\"; ";
 			}
 
 			/* if not, let's clone it now */
-			echo "\033[1;32m";
-			unset($output);
-			exec("git clone {$repo['ssh_url']} $path", $output);
-			echo implode(PHP_EOL, $output) . PHP_EOL;
-			echo "\033[0m\n";
+			$bash .= "echo \"Cloning {$repo['owner']['login']}/{$repo['name']}\"; cd \"$owner\"; git clone {$repo['ssh_url']}; ";
 		} else {
 			/* if it _is_ cloned, let's track all remote branches and pull changes */
-			unset($output);
-			echo "{$repo['owner']['login']}/{$repo['name']}\n";
-			exec("cd $path; git pull --all; cd $root", $output);
-			echo "  " . implode (PHP_EOL . "  ", $output) . PHP_EOL;
+			$bash .= "echo \"Pulling {$repo['owner']['login']}/{$repo['name']}\"; cd \"$path\"; git pull --all; ";
 		}
 	}
 	$page++;
 } while (count($repos) > 0);
+$bash .= "' 2>&1";
+
+$output = [];
+exec($bash, $output);
+echo implode (PHP_EOL, $output) . PHP_EOL;
