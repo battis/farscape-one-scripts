@@ -39,15 +39,16 @@ do {
 		$owner = "$root/{$repo['owner']['login']}";
 		$path = "{$owner}/{$repo['name']}";
 		if (!file_exists($path)) {
+			$bash .= "echo \"\033[1;32m\"; ";
 			if (!file_exists($owner)) {
 				$bash .= "mkdir \"$owner\"; ";
 			}
 
 			/* if not, let's clone it now */
-			$bash .= "echo \"Cloning {$repo['owner']['login']}/{$repo['name']}\"; cd \"$owner\"; git clone {$repo['ssh_url']}; ";
+			$bash .= "echo \"Cloning {$repo['owner']['login']}/{$repo['name']}\"; cd \"$owner\"; echo \"\033[5;32m\"; git clone {$repo['ssh_url']}; echo \"\033[0m\"";
 		} else {
 			/* if it _is_ cloned, let's track all remote branches and pull changes */
-			$bash .= "echo \"Pulling {$repo['owner']['login']}/{$repo['name']}\"; cd \"$path\"; git pull --all; ";
+			$bash .= "echo \"Pulling {$repo['owner']['login']}/{$repo['name']}\"; cd \"$path\"; echo \"\033[2;30m\"; git pull --all; echo \"\033[0m\"; ";
 		}
 	}
 	$page++;

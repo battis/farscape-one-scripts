@@ -7,19 +7,10 @@ gregDir=$HOME/Library/Application\ Support/greg/Podcasts
 iTunesLibrary=$HOME/Music/iTunes\ \(Music\ \&\ Audiobooks\)
 autoAddDir=$iTunesLibrary/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 
-printf "************************************************************************\n"
 greg sync
 if [ -n "$(ls "$gregDir")" ]; then
 	printf "\033[1;32mMoving downloaded podcasts to iTunes"
 	mv "$gregDir"/* "$autoAddDir"
-#	music >/dev/null 2>&1
-#	while [ -n "$(ls "$autoAddDir")" ]; do
-#		printf "."
-#		sleep .25
-#	done
-#	sleep 5
-#	printf "\n"
-#	printf "Done\033[0m\n"
 else
 	printf "\033[1;31mNo podcasts ready for download\033[0m\n"
 fi

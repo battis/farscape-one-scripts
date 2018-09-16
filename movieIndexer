@@ -3,7 +3,7 @@
 # brew install mediainfo
 # brew install homebrew/dupes/grep --with-default-names
 
-cd /Volumes/Movies
+cd $MOVIES_DIR
 
 shopt -s extglob
 for d in ./!(_*)/; do
