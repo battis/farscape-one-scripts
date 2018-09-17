@@ -39,21 +39,20 @@ do {
 		$owner = "$root/{$repo['owner']['login']}";
 		$path = "{$owner}/{$repo['name']}";
 		if (!file_exists($path)) {
-			$bash .= "echo \"\033[1;32m\"; ";
 			if (!file_exists($owner)) {
 				$bash .= "mkdir \"$owner\"; ";
 			}
 
 			/* if not, let's clone it now */
-			$bash .= "echo \"Cloning {$repo['owner']['login']}/{$repo['name']}\"; cd \"$owner\"; echo \"\033[5;32m\"; git clone {$repo['ssh_url']}; echo \"\033[0m\"";
+			$bash .= "echo \"\033[1;32mCloning {$repo['owner']['login']}/{$repo['name']}\033[5;32m\"; cd \"$owner\"; git clone {$repo['ssh_url']}; ";
 		} else {
 			/* if it _is_ cloned, let's track all remote branches and pull changes */
-			$bash .= "echo \"Pulling {$repo['owner']['login']}/{$repo['name']}\"; cd \"$path\"; echo \"\033[2;30m\"; git pull --all; echo \"\033[0m\"; ";
+			$bash .= "echo \"\033[0mPulling {$repo['owner']['login']}/{$repo['name']}\033[1;30m\"; cd \"$path\"; git pull --all; ";
 		}
 	}
 	$page++;
 } while (count($repos) > 0);
-$bash .= "' 2>&1";
+$bash .= "echo \"\033[0m\"' 2>&1";
 
 $output = [];
 exec($bash, $output);

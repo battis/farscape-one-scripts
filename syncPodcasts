@@ -7,7 +7,7 @@ gregDir=$HOME/Library/Application\ Support/greg/Podcasts
 iTunesLibrary=$HOME/Music/iTunes\ \(Music\ \&\ Audiobooks\)
 autoAddDir=$iTunesLibrary/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 
-greg sync
+greg sync 2>&1
 if [ -n "$(ls "$gregDir")" ]; then
 	printf "\033[1;32mMoving downloaded podcasts to iTunes"
 	mv "$gregDir"/* "$autoAddDir"
