@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+usage() {
+	echo "Usage: `basename $0` enable|disable"
+	echo ""
+	echo "Arguments are case-sensitive."
+	echo ""
+	exit 65
+}
+
+cloudSyncingEnable() {
+	printf "Enabling cloud syncing...\n";
+	printf "\tDropbox\n"
+	open "$HOME/Applications/Dropbox.app"
+	printf "\tGoogle Backup and Sync\n"
+	open "$HOME/Applications/Backup and Sync.app"
+	printf "\tOneDrive\n"
+	open "/Applications/OneDrive.app"
+	printf "...ready.\n"
+}
+ 
+cloudSyncingDisable() {
+	printf "Disabling cloud syncing...\n"
+	printf "\tDropbox"
+	osascript -e 'quit app "Dropbox"'
+	while pgrep -xq -- "Dropbox"; do
+		printf "."
+		sleep 2
+	done
+	printf "\n\tGoogle Backup and Sync"
+	killall -QUIT -m "Backup and Sync*"
+	while pgrep -xq -- "Backup and Sync*"; do
+		printf "."
+		sleep 2
+	done
+	printf "\n\tOneDrive"
+	osascript -e 'quit app "OneDrive"'
+	while pgrep -xq -- "OneDrive"; do
+		printf "."
+		sleep 2
+	done
+	printf "\n...processor bandwidth returned to user.\n"
+}
+
+case "$1" in
+"enable")
+	cloudSyncingEnable
+	;;
+"disable")
+	cloudSyncingDisable
+	;;
+*)
+	usage
+	;;
+esac
