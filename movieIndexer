@@ -44,7 +44,7 @@ for d in ./!(_*)/; do
 			track=""
 			if [[ $f != *"H.264"* ]]; then
 				title=""
-				filename="$(basename "$f" | grep -oP ".*(?=\.\w{3,3})")"
+				filename="$(basename "$f" | grep -oP "((?<=\d{2,2}(-\d) )|(?<=\d{2,2} )).*(?=\.\w{3,3})")"
 				if [[ $filename == *[_]* ]] || [[ $filename == [0-9][0-9]" "* ]]; then 
 					movie="$(mediainfo "$f" | grep -oP "(?<=^Movie name                               : ).*")"
 					if [ -z "$movie" ]; then
