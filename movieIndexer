@@ -9,6 +9,14 @@
 # default output is a file named Movies.md in the current working directory
 # for custom output file, a custom path must be provided as well
 
+# debugging flag
+debugging=false
+debug() {
+	if $debugging; then
+		echo $1
+	fi
+}
+
 # set up output file
 if [ ! -z ${2+x} ]; then
 	indexFile="$2"
@@ -31,11 +39,17 @@ count=0
 # walk through every file and directory in the path
 shopt -s extglob
 for d in ./!(_*)/; do
+	debug "$d"
 	directory="$(basename "$d")"
+	debug "directory=$directory"
 	title=""
 	if [ `ls -1 "$d" | wc -l` != "1" ] || [[ $directory == *[_]* ]]; then
 		indent="  "
+		debug "$indent IF > 1 movie || _ in name"
 		if [ `ls -1 "$d" | wc -l` != "1" ]; then
+			# FIXME will print directory even if _ in name
+			# TODO detect if a filename matches directory name
+			if $debugging; then echo "$indent> 1 movie"; fi
 			echo "  - $directory" >> "$indexFile"
 			indent="$indent  "
 		fi
@@ -43,12 +57,17 @@ for d in ./!(_*)/; do
 			movie=""
 			track=""
 			if [[ $f != *"H.264"* ]]; then
+				debug "$indent f=$f"
+				debug "$indent IF not H.264"
 				title=""
-				filename="$(basename "$f" | grep -oP "((?<=\d{2,2}(-\d) )|(?<=\d{2,2} )).*(?=\.\w{3,3})")"
-				if [[ $filename == *[_]* ]] || [[ $filename == [0-9][0-9]" "* ]]; then 
+				filename="$(basename "$f" | sed 's/^\([0-9][0-9]\(-[0-9]*\)* \)*\(.*\)\(\..*\)$/\3/')"
+				debug "$indent filename=$filename"
+				if [[ $filename == *[_]* ]] || [[ $filename == [0-9][0-9]" "* ]] || [[ $filename == [0-9][0-9]"-"[0-9]" "* ]]; then 
 					movie="$(mediainfo "$f" | grep -oP "(?<=^Movie name                               : ).*")"
+					debug "$indent movie=$movie"
 					if [ -z "$movie" ]; then
 						track="$(mediainfo "$f" | grep -oP "(?<=^Track name                               : ).*")"
+						debug "$indent track=$track"
 						if [ -z "$track" ]; then
 							title="$filename"
 						else
@@ -57,12 +76,17 @@ for d in ./!(_*)/; do
 					else
 						title="$movie"
 					fi
+				else
+					debug "$indent IF use directory as title"
 				fi
 				if [[ -z $title ]]; then
 					title="$filename"
 				fi
+				debug "$indent title=$title"
 				echo "$indent- $title" >> "$indexFile"
 				((count++))
+			else
+				debug "$indent IF H.264, not indexing"
 			fi
 		done
 	else
