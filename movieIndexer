@@ -3,11 +3,24 @@
 # brew install mediainfo
 # brew install homebrew/dupes/grep --with-default-names
 
-# Usage:
-# movieIndexer [path to index] [output file]
-# default path is the current working directory
-# default output is a file named Movies.md in the current working directory
-# for custom output file, a custom path must be provided as well
+
+usage() {
+	echo "Usage: `basename $0` [path to index] [output file]"
+	echo ""
+	echo "The default path is the current working directory."
+	echo ""
+	echo "The default output is a file named Movies.md in the current working"
+	echo "directory, for custom output file, a custom path must be provided as" 
+	echo "well."
+	echo ""
+	exit 65
+}
+
+case "$1" in
+"--help")
+	usage
+	;;
+esac
 
 # debugging flag
 debugging=false

@@ -3,6 +3,26 @@
 # usage: iTunesLibraryToggle [library] [playlist]
 # e.g. iTunesLibraryToggle "$HOME/Music/iTunes (Music & Audiobooks)" Audiobooks
 
+usage() {
+	echo "Usage: `basename $0` <library path> [playlist name]"
+	echo ""
+	echo "This command has four helper commands that act as shortcuts:"
+	echo "  music"
+	echo "   equivalent to:"
+	echo "   iTunesLibraryToggle \"~/Music/iTunes (Music & Audiobooks)\" Music"
+	echo "  audiobooks"
+	echo "    equivalent to:"
+	echo "    iTunesLibraryToggle \"~/Music/iTunes (Music & Audiobooks)\" Audiobooks"
+	echo "  movies"
+	echo "    equivalent to:"
+	echo "    iTunesLibraryToggle \"~/Music/iTunes (Movies & TV Shows)\" Movies"
+	echo "  tvshows"
+	echo "    equivalent to:"
+	echo "    iTunesLibraryToggle \"~/Music/iTunes (Movies & TV Shows)\" \"TV Shows\""
+	echo ""
+	exit 65
+}
+
 iTunesLibraryToggle() {
 	# make sure the iTunes directory is, in fact, a symlink
 	iTunesDir=$HOME/Music/iTunes
@@ -53,4 +73,11 @@ iTunesLibraryToggle() {
 	fi
 }
 
-iTunesLibraryToggle "$1" "$2"
+case "$1" in
+""|"--help")
+	usage
+	;;
+*)
+	iTunesLibraryToggle "$1" "$2"
+	;;
+esac

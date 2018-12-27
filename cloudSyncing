@@ -10,31 +10,31 @@ usage() {
 
 cloudSyncingEnable() {
 	printf "Enabling cloud syncing...\n";
-	printf "\tDropbox\n"
-	open "$HOME/Applications/Dropbox.app"
-	printf "\tGoogle Backup and Sync\n"
-	open "$HOME/Applications/Backup and Sync.app"
-	printf "\tOneDrive\n"
-	open "/Applications/OneDrive.app"
+	printf "  Dropbox\n"
+	open "$HOME/Applications/Dropbox.app" 2>&1
+	printf "  Google Backup and Sync\n"
+	open "$HOME/Applications/Backup and Sync.app" 2>&1
+	printf "  OneDrive\n"
+	open "/Applications/OneDrive.app" 2>&1
 	printf "...ready.\n"
 }
  
 cloudSyncingDisable() {
 	printf "Disabling cloud syncing...\n"
-	printf "\tDropbox"
-	osascript -e 'quit app "Dropbox"'
+	printf "  Dropbox\n    "
+	osascript -e 'quit app "Dropbox"' 2>&1
 	while pgrep -xq -- "Dropbox"; do
 		printf "."
 		sleep 2
 	done
-	printf "\n\tGoogle Backup and Sync"
-	killall -QUIT -m "Backup and Sync*"
+	printf "\n  Google Backup and Sync\n    "
+	killall -QUIT -m "Backup and Sync*" 2>&1
 	while pgrep -xq -- "Backup and Sync*"; do
 		printf "."
 		sleep 2
 	done
-	printf "\n\tOneDrive"
-	osascript -e 'quit app "OneDrive"'
+	printf "\n  OneDrive\n    "
+	osascript -e 'quit app "OneDrive"' 2>&1
 	while pgrep -xq -- "OneDrive"; do
 		printf "."
 		sleep 2
