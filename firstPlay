@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# https://gist.github.com/battis/ea43e0eea00e478e2298f2828f903ea6#gistcomment-2896146
+echo "Renaming tracks to bring more joy..."
+osascript "$HOME/Library/Scripts/Applications/iTunes/Rename Track for First Play.scpt" >>/dev/null
