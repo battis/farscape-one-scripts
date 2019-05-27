@@ -11,35 +11,35 @@ usage() {
 cloudSyncingEnable() {
 	printf "Enabling cloud syncing...\n";
 	printf "  Dropbox\n"
-	open "$HOME/Applications/Dropbox.app" 2>&1
+	open -a "Dropbox" 2>&1
 	printf "  Google Backup and Sync\n"
-	open "$HOME/Applications/Backup and Sync.app" 2>&1
-	printf "  OneDrive\n"
-	open "/Applications/OneDrive.app" 2>&1
-	printf "...ready.\n"
+	open -a "Backup and Sync" 2>&1
+	printf "  Microsoft OneDrive\n"
+	open -a "OneDrive" 2>&1
+	printf "Ready.\n"
 }
  
 cloudSyncingDisable() {
 	printf "Disabling cloud syncing...\n"
-	printf "  Dropbox\n    "
+	printf "  Dropbox"
 	osascript -e 'quit app "Dropbox"' 2>&1
 	while pgrep -xq -- "Dropbox"; do
 		printf "."
 		sleep 2
 	done
-	printf "\n  Google Backup and Sync\n    "
+	printf "\n  Google Backup and Sync"
 	killall -QUIT -m "Backup and Sync*" 2>&1
 	while pgrep -xq -- "Backup and Sync*"; do
 		printf "."
 		sleep 2
 	done
-	printf "\n  OneDrive\n    "
+	printf "\n  OneDrive"
 	osascript -e 'quit app "OneDrive"' 2>&1
 	while pgrep -xq -- "OneDrive"; do
 		printf "."
 		sleep 2
 	done
-	printf "\n...processor bandwidth returned to user.\n"
+	printf "\nProcessor bandwidth returned to user.\n"
 }
 
 case "$1" in
