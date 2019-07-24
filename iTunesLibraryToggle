@@ -56,15 +56,15 @@ iTunesLibraryToggle() {
 	
 		# re-open iTunes with new library location
 		printf "Opening iTunes\n"
-		open "/Applications/iTunes.app"
+		open -a iTunes
 	
 		# open requested playlist (if any)
-		case "$2" in
-		"Music" | "Audiobooks" | "Movies" | "TV Shows" )
+		case $2 in
+		*)
 			printf "Opening $2 playlist\n"
 			osascript -e "tell application \"iTunes\" to reveal playlist \"$2\""
 			;;
-		*)
+		"")
 			# do nothing
 			;;
 		esac

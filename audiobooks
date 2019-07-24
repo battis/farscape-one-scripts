@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-iTunesLibraryToggle "$HOME/Music/iTunes (Music & Audiobooks)" Audiobooks
+iTunesLibraryToggle "$HOME/Music/iTunes (Music & Audiobooks)" "Audiobooks "
