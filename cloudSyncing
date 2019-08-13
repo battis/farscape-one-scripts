@@ -21,20 +21,20 @@ cloudSyncingEnable() {
  
 cloudSyncingDisable() {
 	printf "Disabling cloud syncing...\n"
-	printf "  Dropbox"
 	osascript -e 'quit app "Dropbox"' 2>&1
+	killall -QUIT "Backup and Sync" 2>&1
+	osascript -e 'quit app "OneDrive"' 2>&1
+	printf "  Dropbox"
 	while pgrep -xq -- "Dropbox"; do
 		printf "."
 		sleep 2
 	done
 	printf "\n  Google Backup and Sync"
-	killall -QUIT -m "Backup and Sync*" 2>&1
 	while pgrep -xq -- "Backup and Sync*"; do
 		printf "."
 		sleep 2
 	done
-	printf "\n  OneDrive"
-	osascript -e 'quit app "OneDrive"' 2>&1
+	printf "\n  Microsoft OneDrive"
 	while pgrep -xq -- "OneDrive"; do
 		printf "."
 		sleep 2
