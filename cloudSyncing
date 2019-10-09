@@ -21,7 +21,7 @@ cloudSyncingEnable() {
  
 cloudSyncingDisable() {
 	printf "Disabling cloud syncing...\n"
-	osascript -e 'quit app "Dropbox"' 2>&1
+	killall -QUIT "Dropbox" 2>&1
 	killall -QUIT "Backup and Sync" 2>&1
 	osascript -e 'quit app "OneDrive"' 2>&1
 	printf "  Dropbox"
