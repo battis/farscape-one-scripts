@@ -43,7 +43,7 @@ if [ ! -z ${1+x} ]; then
 fi
 
 # logging output
-echo "Writing index of movies in $PWD to $indexFile..."
+# echo "Writing index of movies in $PWD to $indexFile..."
 echo > "$indexFile"
 
 # count movies
@@ -109,4 +109,4 @@ for d in ./!(_*)/; do
 done
 shopt -u extglob
 
-echo "Index updated ($count movies)"
+echo "'$indexFile' updated ($count movies)"
