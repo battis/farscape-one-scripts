@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+itunesScripts="$HOME/Library/Scripts/Applications/iTunes"
+podcastScripts="$itunesScripts/Metadata/Podcast Cleanup"
+
+# switch to Music & Audiobooks library
+audiobooks >>/dev/null  2>&1
+
+# exploit first-named-track-autoplay bug for joy
+osascript "$itunesScripts/Rename Track for First Play.scpt"
+
+# fix podcast metadata automagically
+osascript "$podcastScripts/Convert Miscategorized to Audiobook.scpt"
+osascript "$podcastScripts/TAL without Metadata.scpt"
+osascript "$podcastScripts/TAL Episode Updater.scpt"
+osascript "$podcastScripts/TAL without Metadata.scpt"
+osascript "$podcastScripts/Escape Pod Updater.scpt"
+
+# update master list of ripped DVDs
+movieIndexer "$MOVIES_DIR" "$HOME/Dropbox/Documents/Movies.md"
