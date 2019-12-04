@@ -4,17 +4,17 @@ itunesScripts="$HOME/Library/Scripts/Applications/iTunes"
 podcastScripts="$itunesScripts/Metadata/Podcast Cleanup"
 
 # switch to Music & Audiobooks library
-audiobooks >>/dev/null  2>&1
+audiobooks >/dev/null  2>&1
 
 # exploit first-named-track-autoplay bug for joy
-osascript "$itunesScripts/Rename Track for First Play.scpt"
+osascript "$itunesScripts/Rename Track for First Play.scpt" >"$CRONTAB_LOGS/iTunes.log" 2>&1
 
 # fix podcast metadata automagically
-osascript "$podcastScripts/Convert Miscategorized to Audiobook.scpt"
-osascript "$podcastScripts/TAL without Metadata.scpt"
-osascript "$podcastScripts/TAL Episode Updater.scpt"
-osascript "$podcastScripts/TAL without Metadata.scpt"
-osascript "$podcastScripts/Escape Pod Updater.scpt"
+osascript "$podcastScripts/Convert Miscategorized to Audiobook.scpt" >"$CRONTAB_LOGS/iTunes.log" 2>&1
+osascript "$podcastScripts/TAL without Metadata.scpt" >"$CRONTAB_LOGS/iTunes.log" 2>&1
+osascript "$podcastScripts/Episode Updaters/This American Life.scpt" >"$CRONTAB_LOGS/iTunes.log" 2>&1
+osascript "$podcastScripts/TAL without Metadata.scpt" >"$CRONTAB_LOGS/iTunes.log" 2>&1
+osascript "$podcastScripts/Episode Updaters/Escape Artists.scpt" >"$CRONTAB_LOGS/iTunes.log" 2>&1
 
 # update master list of ripped DVDs
-movieIndexer "$MOVIES_DIR" "$HOME/Dropbox/Documents/Movies.md"
+movieIndexer "$MOVIES_DIR" "$HOME/Dropbox/Documents/Movies.md" >"$CRONTAB_LOGS/iTunes.log" 2>&1
