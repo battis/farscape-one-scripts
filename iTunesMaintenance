@@ -10,7 +10,7 @@ exec 1> /dev/null
 audiobooks
 
 # exploit first-named-track-autoplay bug for joy
-osascript "$itunesScripts/Rename Track for First Play.scpt"
+# osascript "$itunesScripts/Rename Track for First Play.scpt"
 
 # fix podcast metadata automagically
 osascript "$podcastScripts/Convert Miscategorized to Audiobook.scpt"
