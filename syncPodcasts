@@ -4,7 +4,7 @@
 # pip3 install --user greg
 
 gregDir=$HOME/Library/Application\ Support/greg/Podcasts
-iTunesLibrary=$HOME/Music/iTunes\ \(Music\ \&\ Audiobooks\)
+iTunesLibrary=$HOME/Music/iTunes
 autoAddDir=$iTunesLibrary/iTunes\ Media/Automatically\ Add\ to\ iTunes.localized
 
 greg sync 2>&1

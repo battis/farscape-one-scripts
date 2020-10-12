@@ -7,7 +7,8 @@ exec 3>&1
 exec 1> /dev/null
 
 # switch to Music & Audiobooks library
-audiobooks
+# audiobooks
+open -a "iTunes"
 
 # exploit first-named-track-autoplay bug for joy
 # osascript "$itunesScripts/Rename Track for First Play.scpt"
